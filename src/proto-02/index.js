@@ -1,39 +1,40 @@
-import Stats from 'stats.js';
-import { Application } from 'pixi.js';
-import { createCircle } from '../utils/pixi';
 import '../utils/reset.css';
+import { createMachine, createActor, assign } from 'xstate';
 
-async function main() {
-  const stats = new Stats();
-  document.body.appendChild(stats.dom);
+// State machine
+const toggleMachine = createMachine({
+  /** @xstate-layout N4IgpgJg5mDOIC5QBcD2UoBswDoCWAdgIYDGyeAbmAMQAqA8gOKMAyAogNoAMAuoqAAdUsPOVQF+IAB6IAbACYc8gCwB2ZVwCsq2aoAcXZXr0AaEAE9EARis4uqgMyrVATnl6XqzW72qAvn5maBjYOKTkVHRMrJy8kkIiYhJI0nKKKupaOvqGxmaWCAC0Dno4jr7y8rKGKpqaegGBIASoEHCSwVhg8cKieOKSMkVWXFxlVg6aDgol7g5WphaIhRMOOMryC3oTeip6DsoBQehd+MRklN0pCX0DKUOFmoqqE1Mzu-sL+csOii4umlkQN+hlUm38TU6oXClx6iX6yVAQwWyhwLisQJ0GlUXFkvm+RWUsjsLg8sieHncOk0jT8QA */
+  id: 'toggle',
 
-  const app = new Application();
+  initial: 'inactive',
 
-  await app.init({
-    width: window.innerWidth,
-    height: window.innerHeight,
-    resolution: window.devicePixelRatio || 1,
-    antialias: true,
-    backgroundColor: 0xf7f7f7,
-    resizeTo: window,
-  });
+  context: {
+    count: 0,
+  },
 
-  const circle = createCircle(0, 0, 50, 0xff00ff);
-  app.stage.addChild(circle);
+  states: {
+    inactive: {
+      on: {
+        TOGGLE: { target: 'active' },
+      },
+    },
+    active: {
+      entry: assign({ count: ({ context }) => context.count + 1 }),
+      on: {
+        TOGGLE: { target: 'inactive' },
+      },
+    },
+  },
+});
 
-  let a = 0;
+// Actor (instance of the machine logic, like a store)
+const toggleActor = createActor(toggleMachine);
+toggleActor.subscribe((state) => console.log(state.value, state.context));
+toggleActor.start();
+// => logs 'inactive', { count: 0 }
 
-  app.ticker.add(() => {
-    circle.x = Math.sin(a * 0.85) * 100 + window.innerWidth * 0.5;
-    circle.y = Math.cos(a * 0.75) * 100 + window.innerHeight * 0.5;
-    circle.scale.x = Math.cos(a * 0.75) * 0.5 + 1;
-    circle.scale.y = Math.sin(a * 0.85) * 0.5 + 1;
-    a += 0.1;
+toggleActor.send({ type: 'TOGGLE' });
+// => logs 'active', { count: 1 }
 
-    stats.update();
-  });
-
-  document.body.appendChild(app.canvas);
-}
-
-main();
+toggleActor.send({ type: 'TOGGLE' });
+// => logs 'inactive', { count: 1 }

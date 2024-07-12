@@ -1,3 +1,13 @@
+# How to use this repo
+
+## States
+
+If you're reading this, some of these prototypes use XState, which is a package that helps manage logic
+in a sort of visual flow chart and state as encapsulated blocks of code.
+If you're using Visual Studio Code, you will want to install the Xstate add on to view and edit these states visually
+
+---
+
 # Proto - Boilerplate
 
 ## Scripts
@@ -51,4 +61,3 @@ Change on your Github Project settings page https://github.com/[username]/[proje
 ---
 
 This project uses [Prettier](https://prettier.io/) to format the code.
-
