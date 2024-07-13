@@ -1,29 +1,46 @@
 import '../utils/reset.css';
 import { createMachine, createActor, assign } from 'xstate';
 
+// to do list -
+// get a start button into the dom in a way that makes sense
+
 // State machine
 const toggleMachine = createMachine({
-  /** @xstate-layout N4IgpgJg5mDOIC5QBcD2UoBswDoCWAdgIYDGyeAbmAMQAqA8gOKMAyAogNoAMAuoqAAdUsPOVQF+IAB6IAbACYc8gCwB2ZVwCsq2aoAcXZXr0AaEAE9EARis4uqgMyrVATnl6XqzW72qAvn5maBjYOKTkVHRMrJy8kkIiYhJI0nKKKupaOvqGxmaWCAC0Dno4jr7y8rKGKpqaegGBIASoEHCSwVhg8cKieOKSMkVWXFxlVg6aDgol7g5WphaIhRMOOMryC3oTeip6DsoBQehd+MRklN0pCX0DKUOFmoqqE1Mzu-sL+csOii4umlkQN+hlUm38TU6oXClx6iX6yVAQwWyhwLisQJ0GlUXFkvm+RWUsjsLg8sieHncOk0jT8QA */
+  /** @xstate-layout N4IgpgJg5mDOIC5QBcD2UoBswDoCqsYATgARgB2yxsJAluQA4CuyAxACoDyA4twDIBRANoAGALqJQDVLFrJaqcpJAAPRADYATDk0AWAOy6RAVn3r9ADhG6LFgDQgAnogCMLnCP0BmffoCcmhZ++sYBFvoAvhEOaBjYOACGAMbyAG5gHDz8wuLK0rLyispqCMbGOF4ifn4mZpbWtg7OCAC0uuo6XuGamurWemUWUTHoWBkC6ZQkLqISSCD5cgpK8yXhOKYWLl6axha6XgFmTa6a7qY+-oHBoZqR0SCxY-iEpBRURDT0zGwA0kS0WCzPIyJZFVaITQiHB+PZeLpmFz6FzqLb6E6tFx3HAuPw2CzGTzWfRne4jOK4AjEMiUah0RgsVj-QFCFxzKSgworUAlKEwuEI9RIlFojEtLo4dR42yE-TE0lRB7kVAQODKJ7YEEFZbFRAtM7Q4y6FFCzRdQJeFz2Jx6wL6DaeLqy+WaYaPUbxKlvWmfek-LVg7mqPUo7RGk1Y80WS3W5otLEWHC6ZMyokGBUPDW4ZJpMABrm6hBW3Qwk1mIxy1Hom2tdoePxBdTGa52pturM4chgADuJFgyASVGm+Z1EIQZsTplDIhEbmRqM0Yqh0Jn3gJaZJSMVESAA */
   id: 'toggle',
 
-  initial: 'inactive',
+  initial: 'User enters input',
 
   context: {
     count: 0,
   },
 
   states: {
-    inactive: {
+    'User enters input': {
       on: {
         TOGGLE: { target: 'active' },
+        Kris: [
+          {
+            target: 'new state 1',
+            guard: 'layout',
+          },
+          'new state 1',
+        ],
       },
     },
+
     active: {
       entry: assign({ count: ({ context }) => context.count + 1 }),
       on: {
-        TOGGLE: { target: 'inactive' },
+        TOGGLE: { target: 'User enters input' },
       },
     },
+
+    'new state 1': {},
+  },
+
+  on: {
+    'Event 1': '#toggle',
   },
 });
 
